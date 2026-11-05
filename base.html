@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>通用 Base · 启智布局模板</title>
+  <style>
+/* Qizhi layout specification v1.0. Original shell; no upstream simulator assets. */
+:root {
+  --qz-font: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  --qz-text: #203a43; --qz-muted: #526b73; --qz-bg: #eef4f3;
+  --qz-surface: #ffffff; --qz-soft: #f4f8f7; --qz-line: #ceddda;
+  --qz-primary: #146b76; --qz-primary-hover: #105761; --qz-primary-soft: #e4f1ef;
+  --qz-accent: #b45b27; --qz-accent-soft: #fff1e5;
+  --qz-danger: #a3333b; --qz-focus: #285dce;
+  --qz-s1: 4px; --qz-s2: 8px; --qz-s3: 12px; --qz-s4: 16px; --qz-s6: 24px;
+  --qz-font-body: 16px; --qz-font-title: 20px; --qz-font-section: 18px;
+  --qz-font-control: 15px; --qz-font-small: 13px; --qz-line-height: 1.6;
+  --qz-target: 44px; --qz-radius-control: 8px; --qz-radius-panel: 12px;
+  --qz-header-height: 56px; --qz-sidebar: 288px; --qz-stage-min: 240px;
+  --qz-shadow: 0 4px 18px rgba(24, 59, 63, .06);
+  --qz-z-toast: 20; --qz-z-modal: 40;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; min-height: 100%; }
+body { font: var(--qz-font-body)/var(--qz-line-height) var(--qz-font); color: var(--qz-text); background: var(--qz-bg); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button, select { touch-action: manipulation; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .48; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--qz-focus); outline-offset: 3px;
+}
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: var(--qz-font-title); line-height: 1.35; font-weight: 700; overflow-wrap: anywhere; }
+h2, h3 { font-size: var(--qz-font-section); line-height: 1.45; font-weight: 700; }
+a { color: var(--qz-primary); text-underline-offset: 3px; }
+small, .qz-small { font-size: var(--qz-font-small); color: var(--qz-muted); }
+.qz-sim { width: 100%; height: 100vh; height: 100dvh; min-height: 427px; display: flex; flex-direction: column; }
+.qz-header { flex: none; min-height: var(--qz-header-height); padding: 10px var(--qz-s6); display: flex; align-items: center; justify-content: space-between; gap: var(--qz-s4); background: var(--qz-surface); border-bottom: 1px solid var(--qz-line); }
+.qz-heading { min-width: 0; display: grid; gap: 3px; }
+.qz-heading-line { display: flex; align-items: center; gap: var(--qz-s3); flex-wrap: wrap; }
+.qz-mark { flex: none; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: var(--qz-primary); color: #fff; font-size: 16px; font-weight: 700; }
+.qz-kicker { font-size: 13px; color: var(--qz-muted); letter-spacing: .03em; }
+.qz-question { color: var(--qz-muted); font-size: 16px; }
+.qz-header-actions, .qz-actions, .qz-segment, .qz-modebar { display: flex; align-items: center; gap: var(--qz-s2); flex-wrap: wrap; }
+.qz-header-actions { flex: none; }
+.qz-btn, .qz-tab, .qz-chip { min-width: var(--qz-target); min-height: var(--qz-target); padding: 9px 14px; border: 1px solid var(--qz-line); border-radius: var(--qz-radius-control); background: var(--qz-surface); font-size: var(--qz-font-control); line-height: 1.45; transition: background-color .15s, border-color .15s; }
+.qz-btn:hover:not(:disabled), .qz-tab:hover { background: var(--qz-soft); border-color: #9ab8b4; }
+.qz-btn--primary { background: var(--qz-primary); color: #fff; border-color: var(--qz-primary); }
+.qz-btn--primary:hover:not(:disabled) { background: var(--qz-primary-hover); border-color: var(--qz-primary-hover); }
+.qz-btn--quiet { background: transparent; }
+.qz-btn--reset { color: var(--qz-text); }
+.qz-icon { margin-right: 5px; font-size: 18px; }
+.qz-modebar { padding: 8px var(--qz-s6); background: var(--qz-surface); border-bottom: 1px solid var(--qz-line); flex: none; }
+.qz-tab { background: transparent; border-color: transparent; }
+.qz-tab[aria-selected="true"], .qz-chip[aria-pressed="true"], .qz-tool[aria-pressed="true"] { background: var(--qz-primary-soft); color: #104e56; border-color: var(--qz-primary); font-weight: 700; }
+.qz-mode-note { margin-left: auto; font-size: 13px; color: var(--qz-muted); }
+.qz-workspace { flex: 1 1 auto; min-height: 0; min-width: 0; display: grid; gap: var(--qz-s4); padding: var(--qz-s4) var(--qz-s6); overflow: auto; }
+.qz-workspace--sidebar, .qz-workspace--base { grid-template-columns: minmax(0, 1fr) var(--qz-sidebar); }
+.qz-view { min-height: 0; min-width: 0; }
+.qz-panel { min-width: 0; background: var(--qz-surface); border: 1px solid var(--qz-line); border-radius: var(--qz-radius-panel); box-shadow: var(--qz-shadow); }
+.qz-side { display: flex; flex-direction: column; min-height: 0; gap: var(--qz-s3); }
+.qz-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--qz-line); }
+.qz-panel-body { padding: var(--qz-s4); }
+.qz-section-label { display: block; font-size: 13px; color: var(--qz-muted); margin-bottom: 4px; }
+.qz-collapse { flex: none; min-width: 44px; min-height: 44px; padding: 5px 8px; border: 1px solid var(--qz-line); border-radius: 8px; background: var(--qz-soft); font-size: 13px; }
+.qz-field { display: grid; gap: 8px; margin-bottom: 16px; }
+.qz-field:last-child { margin-bottom: 0; }
+.qz-field-line { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.qz-value { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--qz-primary); }
+input[type="range"] { width: 100%; min-width: 0; min-height: 44px; accent-color: var(--qz-primary); cursor: pointer; }
+select, input[type="text"], textarea { width: 100%; min-width: 0; min-height: 44px; padding: 9px 10px; border: 1px solid #a9c0bd; border-radius: 8px; background: #fff; }
+textarea { resize: vertical; min-height: 88px; }
+.qz-check { display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+.qz-check input { width: 20px; height: 20px; margin: 0; accent-color: var(--qz-primary); }
+.qz-stage { position: relative; min-width: 0; min-height: var(--qz-stage-min); display: flex; flex-direction: column; overflow: hidden; }
+.qz-stage-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--qz-line); background: #fff; }
+.qz-stage-head small { text-align: right; }
+.qz-viewport { min-height: var(--qz-stage-min); min-width: 0; flex: 1; display: grid; place-items: center; position: relative; padding: 28px; background: radial-gradient(circle at 50% 40%, #ffffff 0%, #f0f7f5 68%, #e6f0ed 100%); overflow: hidden; }
+.qz-placeholder { max-width: 480px; position: relative; z-index: 1; display: grid; justify-items: center; text-align: center; gap: 12px; pointer-events: none; }
+.qz-placeholder p { max-width: 28em; color: var(--qz-muted); }
+.qz-object { width: 110px; height: 110px; display: grid; place-items: center; position: relative; border-radius: 32px; background: #d8ece7; color: var(--qz-primary); font-size: 32px; font-weight: 500; transform: rotate(-7deg); }
+.qz-object::before, .qz-object::after { content: ""; position: absolute; width: 46px; height: 46px; border: 2px solid #9dbfb7; border-radius: 13px; z-index: -1; }
+.qz-object::before { left: -30px; top: 10px; transform: rotate(17deg); }
+.qz-object::after { right: -24px; bottom: 7px; transform: rotate(-11deg); }
+.qz-scene-caption { padding: 10px 16px; border-top: 1px solid var(--qz-line); font-size: 13px; color: var(--qz-muted); background: #fff; }
+.qz-status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #6c9690; margin-right: 6px; }
+.qz-readout { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #e4ece9; }
+.qz-readout:last-child { border-bottom: 0; }
+.qz-empty { color: var(--qz-muted); padding: 14px 0; }
+.qz-records { list-style: none; padding: 0; margin: 0; }
+.qz-records li { padding: 12px 0; border-bottom: 1px solid #e4ece9; overflow-wrap: anywhere; }
+.qz-records li:last-child { border-bottom: 0; }
+.qz-toolbar { flex: none; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 10px 24px; background: #fff; border-top: 1px solid var(--qz-line); }
+.qz-toolbar-note { color: var(--qz-muted); font-size: 13px; }
+.qz-record-page { flex: 1; margin: 16px 24px; overflow: auto; }
+.qz-workspace--comparison { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr); }
+.qz-comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; min-height: 0; }
+.qz-group { display: flex; flex-direction: column; min-width: 0; overflow: auto; }
+.qz-group-title { display: flex; align-items: center; gap: 10px; }
+.qz-group-code { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 9px; background: var(--qz-primary-soft); font-weight: 700; }
+.qz-group--b .qz-group-code { background: var(--qz-accent-soft); color: #8a471e; }
+.qz-group .qz-viewport { min-height: 240px; }
+.qz-group-controls { padding: 16px; border-top: 1px solid var(--qz-line); }
+.qz-compare-note { border-left: 3px solid var(--qz-primary); padding: 8px 12px; background: var(--qz-primary-soft); color: #2d5658; }
+.qz-workspace--workbench { grid-template-columns: 160px minmax(0,1fr) 264px; }
+.qz-tools { padding: 12px; display: grid; grid-template-columns: 1fr; align-content: start; gap: 8px; }
+.qz-tool { min-height: 76px; width: 100%; border: 1px solid var(--qz-line); border-radius: 8px; background: var(--qz-soft); display: grid; justify-items: center; align-content: center; gap: 4px; padding: 10px; touch-action: none; font-size: 15px; }
+.qz-tool-symbol { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: #d8ebe7; font-size: 16px; font-weight: 700; }
+.qz-drop { width: 100%; max-width: 560px; min-height: 220px; border: 2px dashed #a3c0b9; border-radius: 16px; background: rgba(255,255,255,.65); padding: 20px; display: grid; justify-items: center; align-content: center; gap: 16px; }
+.qz-placed { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.qz-placed-item { padding: 8px 12px; background: var(--qz-primary-soft); border-radius: 8px; font-size: 15px; }
+.qz-workspace--records { grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(260px,1fr) auto; }
+.qz-bottom-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; max-height: 240px; overflow: auto; }
+.qz-bottom-row .qz-panel { overflow: auto; }
+.qz-horizontal-fields { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
+.qz-workspace--dual { display: grid; grid-template-columns: minmax(0,1fr); grid-template-rows: minmax(0,1fr) auto; }
+.qz-dual { min-height: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.qz-shared { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: center; gap: 24px; }
+.qz-sync-label { padding: 6px 12px; border-radius: 8px; background: var(--qz-primary-soft); font-size: 13px; color: #2c5859; }
+.qz-instructions { display: grid; gap: 12px; }
+.qz-instructions li { margin: 8px 0; }
+.qz-modal { position: fixed; inset: 0; z-index: var(--qz-z-modal); display: grid; place-items: center; padding: 20px; background: rgba(15,37,45,.45); }
+.qz-dialog { width: min(100%,640px); max-height: calc(100vh - 40px); max-height: calc(100dvh - 40px); overflow: auto; background: #fff; border: 1px solid var(--qz-line); border-radius: 16px; box-shadow: 0 16px 60px rgba(8,30,37,.22); }
+.qz-dialog-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--qz-line); }
+.qz-dialog-content { padding: 20px; display: grid; gap: 16px; }
+.qz-dialog-content ul { padding-left: 22px; margin: 0; }
+.qz-toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: var(--qz-z-toast); max-width: calc(100% - 32px); padding: 10px 16px; border-radius: 8px; background: #23434b; color: #fff; font-size: 15px; pointer-events: none; }
+.qz-warning { padding: 12px 14px; border-radius: 8px; color: #7a4526; background: var(--qz-accent-soft); font-size: 15px; }
+.qz-screen-reader { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 900px) {
+  .qz-sim { height: auto; min-height: 100vh; min-height: 100dvh; }
+  .qz-header { padding: 12px 16px; flex-wrap: wrap; gap: 12px; }
+  .qz-header-actions { margin-left: auto; }
+  .qz-modebar { padding: 8px 16px; }
+  .qz-mode-note { display: none; }
+  .qz-workspace { flex: 1 0 auto; padding: 12px 16px; overflow: visible; }
+  .qz-workspace--base, .qz-workspace--sidebar { grid-template-columns: minmax(0,1fr); }
+  .qz-stage { min-height: 320px; }
+  .qz-side { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: start; }
+  .qz-side > :only-child { grid-column: 1/-1; }
+  .qz-workspace--workbench { grid-template-columns: minmax(0,1fr); }
+  .qz-tools { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .qz-tool-panel { order: 1; }
+  .qz-workspace--workbench > .qz-stage { order: 0; }
+  .qz-workspace--workbench > .qz-side { order: 2; }
+  .qz-workspace--records { grid-template-rows: minmax(320px,1fr) auto; }
+  .qz-bottom-row { max-height: none; overflow: visible; }
+  .qz-toolbar { padding: 12px 16px; }
+  .qz-record-page { margin: 12px 16px; }
+}
+@media (max-width: 600px) {
+  .qz-header { align-items: flex-start; }
+  .qz-header-actions { width: 100%; margin-left: 0; }
+  .qz-header-actions .qz-btn { flex: 1; }
+  .qz-question { font-size: 16px; }
+  .qz-workspace { padding: 12px; gap: 12px; }
+  .qz-side, .qz-comparison, .qz-bottom-row, .qz-dual, .qz-shared, .qz-horizontal-fields { grid-template-columns: minmax(0,1fr); }
+  .qz-viewport { padding: 24px 16px; }
+  .qz-stage-head { flex-wrap: wrap; }
+  .qz-stage-head small { text-align: left; }
+  .qz-group .qz-viewport { min-height: 240px; }
+  .qz-dialog-content { padding: 16px; }
+  .qz-tools { gap: 8px; }
+  .qz-tool { padding: 8px; }
+}
+@media (max-height: 560px) and (min-width: 901px) {
+  .qz-sim { height: auto; min-height: 100vh; }
+  .qz-workspace { overflow: visible; }
+  .qz-stage { min-height: 240px; }
+  .qz-bottom-row { max-height: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<!-- Template v1.0. Copy this file; replace only the experiment slot and model.
+     The header is inside the sim iframe: do not add account, platform back, or chat UI.
+     Maintain a single state owner and keep actual operation labels stable. -->
+<main class="qz-sim app" data-template-name="通用 Base">
+  <header class="qz-header topbar">
+    <div class="qz-heading"><div class="qz-heading-line"><span class="qz-mark" aria-hidden="true">启</span><h1>通用 Base</h1><span class="qz-kicker">启智 / 布局模板</span></div><p class="qz-question">怎样让实验画面、条件和记录各就其位？</p></div>
+    <div class="qz-header-actions"><button class="qz-btn" type="button" data-action="guide" id="qz-guide-open" aria-haspopup="dialog" aria-controls="qz-guide"><span aria-hidden="true" class="qz-icon">?</span>实验指南</button><button class="qz-btn qz-btn--reset" type="button" data-action="reset" id="qz-reset"><span aria-hidden="true" class="qz-icon">↻</span>重置实验</button></div>
+  </header>
+  <nav class="qz-modebar" role="tablist" aria-label="模板视图"><button class="qz-tab" id="qz-tab-bench" type="button" role="tab" data-tab="bench" aria-selected="true" aria-controls="qz-view-bench">实验台</button><button class="qz-tab" id="qz-tab-records" type="button" role="tab" data-tab="records" aria-selected="false" aria-controls="qz-view-records" tabindex="-1">界面记录</button><span class="qz-mode-note">可选模式栏 · 非关卡</span></nav>
+  <div id="qz-view-bench" class="qz-workspace workspace qz-workspace--base" data-tab-panel="bench" role="tabpanel" aria-labelledby="qz-tab-bench">
+    <section class="qz-panel qz-stage " aria-label="实验现象区"><div class="qz-stage-head"><h2>实验现象区</h2><small><span class="qz-status-dot" aria-hidden="true"></span><span data-runtime>界面已暂停</span></small></div><div class="qz-viewport"><div class="qz-placeholder"><div class="qz-object" aria-hidden="true">○</div><h2 data-scene-label>实验现象区</h2><p>将实验模型与画面放在这里；保留条件和操作的空间。</p><span class="qz-small" data-view-state>整体</span></div></div><div class="qz-scene-caption">可替换为 SVG / Canvas / WebGL；这里只示意布局。</div></section><aside class="qz-side" aria-label="条件和记录"><section class="qz-panel"><div class="qz-panel-head"><h2>实验条件</h2><button class="qz-collapse" type="button" data-collapse="qz-controls" aria-expanded="true" aria-controls="qz-controls" aria-label="展开或收起实验条件">收起</button></div><div id="qz-controls" class="qz-panel-body" ><label class="qz-field" data-qizhi-inspect="intensity-control"><span class="qz-field-line"><span>条件强度</span><output class="qz-value" data-value="intensity">50</output></span><input id="qz-intensity" data-param="intensity" type="range" min="0" max="100" step="1" value="50" aria-label="条件强度，界面示例0到100"><span class="qz-small">0—100，仅为控件示例，不是测量值。</span></label><label class="qz-field"><span>观察方式</span><select id="qz-view" data-param="view"><option value="整体">整体</option><option value="细节">细节</option></select></label><label class="qz-check"><input type="checkbox" id="qz-labels" data-param="labels" checked><span>显示标注</span></label></div></section><section class="qz-panel"><div class="qz-panel-head"><h2>界面记录</h2><button class="qz-collapse" type="button" data-collapse="qz-records-panel" aria-expanded="true" aria-controls="qz-records-panel" aria-label="展开或收起界面记录">收起</button></div><div id="qz-records-panel" class="qz-panel-body" data-secondary-panel><ul class="qz-records" data-record-list aria-label="模板界面记录"><li class="qz-empty">暂无记录。这里仅记录模板界面状态。</li></ul></div></section></aside>
+  </div>
+  <section id="qz-view-records" class="qz-panel qz-record-page" data-tab-panel="records" role="tabpanel" aria-labelledby="qz-tab-records" hidden><div class="qz-panel-head"><h2>模板界面记录</h2></div><div class="qz-panel-body"><ul class="qz-records" data-record-list aria-label="模板界面记录"><li class="qz-empty">暂无记录。这里仅记录模板界面状态。</li></ul></div></section>
+  <footer class="qz-toolbar"><div class="qz-actions"><button class="qz-btn" type="button" data-action="play" aria-pressed="false">▶ 播放示例</button><button class="qz-btn qz-btn--primary" type="button" data-action="record">记录界面状态</button></div><span class="qz-toolbar-note">布局模板 · 无科学模型、评分或自动保存</span></footer>
+</main>
+<div id="qz-guide" class="qz-modal" hidden>
+  <section class="qz-dialog" role="dialog" aria-modal="true" aria-labelledby="qz-guide-title" aria-describedby="qz-guide-description">
+    <header class="qz-dialog-header"><h2 id="qz-guide-title">实验指南</h2><button class="qz-btn" id="qz-guide-close" type="button" data-action="close-guide" aria-label="关闭实验指南">关闭</button></header>
+    <div class="qz-dialog-content"><p id="qz-guide-description">这是“通用 Base”的基础布局模板，不是一个真实实验。</p><ul><li>调节控件，只改变界面状态；不会生成科学结论。</li><li>“记录界面状态”保留本次页面的示例设置，刷新后清空。</li><li>“↻ 重置实验”复位模板；接入真实实验时由开发者替换完整重置函数。</li><li>核心操作支持鼠标、触摸与键盘，帮助不依赖悬停。</li></ul><p class="qz-warning">开发时把这份说明替换为简短的实验操作、模型边界与来源说明；不另建一套 AI 提问入口。</p></div>
+  </section>
+</div>
+<div id="qz-toast" class="qz-toast" role="status" aria-live="polite" hidden></div>
+<script>
+(function () {
+  'use strict';
+  // 1. UI state only. Replace with the experiment model before registering a sim.
+  const root = document.querySelector('.qz-sim');
+  const templateName = root.dataset.templateName;
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => Array.from(document.querySelectorAll(selector));
+  const CONTROL_LABELS = { intensity: '条件强度', a: 'A组条件', b: 'B组条件', shared: '共享条件', view: '观察方式', labels: '显示标注' };
+  function makeState() {
+    return { mode: 'bench', intensity: 50, a: 50, b: 50, shared: 50, view: '整体', labels: true,
+      running: false, selectedTool: '', placed: [], records: [], panels: {} };
+  }
+  let state = makeState();
+  let toastTimer = null;
+  let previousFocus = null;
+  let pointer = null;
+  let suppressClickUntil = 0;
+  const TOOL_NAMES = { materialA: '材料甲', materialB: '材料乙', tool: '工具' };
+
+  // 2. Render from state; never reconstruct model values from labels or styles.
+  function renderRecords() {
+    $$('[data-record-list]').forEach(function (list) {
+      list.replaceChildren();
+      if (!state.records.length) {
+        const li = document.createElement('li');
+        li.className = 'qz-empty'; li.textContent = '暂无记录。这里仅记录模板界面状态。'; list.appendChild(li);
+        return;
+      }
+      state.records.forEach(function (record, index) {
+        const li = document.createElement('li');
+        li.textContent = (index + 1) + '. ' + record; list.appendChild(li);
+      });
+    });
+  }
+  function render() {
+    $$('[data-param]').forEach(function (control) {
+      const value = state[control.dataset.param];
+      if (control.type === 'checkbox') control.checked = value;
+      else control.value = String(value);
+    });
+    $$('[data-value]').forEach(function (label) { label.textContent = String(state[label.dataset.value]); });
+    $$('[data-tab]').forEach(function (tab) {
+      const active = tab.dataset.tab === state.mode;
+      tab.setAttribute('aria-selected', String(active)); tab.tabIndex = active ? 0 : -1;
+    });
+    $$('[data-tab-panel]').forEach(function (panel) { panel.hidden = panel.dataset.tabPanel !== state.mode; });
+    $$('[data-action="play"]').forEach(function (button) {
+      button.textContent = state.running ? 'Ⅱ 暂停示例' : '▶ 播放示例';
+      button.setAttribute('aria-pressed', String(state.running));
+    });
+    $$('[data-runtime]').forEach(function (label) { label.textContent = state.running ? '界面播放态（无科学动画）' : '界面已暂停'; });
+    $$('[data-tool]').forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.tool === state.selectedTool)); });
+    $$('[data-placement-status]').forEach(function (label) { label.textContent = state.selectedTool ? '已选：' + TOOL_NAMES[state.selectedTool] + '；拖入或点击投放区。' : '先选材料，再拖入或点击投放区。'; });
+    $$('[data-placed-list]').forEach(function (list) {
+      list.replaceChildren();
+      state.placed.forEach(function (key) { const item = document.createElement('span'); item.className = 'qz-placed-item'; item.textContent = TOOL_NAMES[key]; list.appendChild(item); });
+    });
+    $$('[data-collapse]').forEach(function (button) {
+      const key = button.dataset.collapse;
+      const open = state.panels[key] !== false;
+      button.setAttribute('aria-expanded', String(open)); button.textContent = open ? '收起' : '展开';
+      document.getElementById(key).hidden = !open;
+    });
+    $$('[data-shared-state]').forEach(function (label) { label.textContent = '共享条件 ' + state.shared + ' / 100（界面示例）'; });
+    $$('[data-scene-label]').forEach(function (label) { label.hidden = !state.labels; });
+    $$('[data-view-state]').forEach(function (label) { label.textContent = state.view; });
+    const notice = $('[data-compare-message]');
+    if (notice) notice.textContent = state.a === state.b ? 'A、B 两组示例条件相同。可改变一组进行对照。' : 'A、B 两组示例条件不同。这里只提示差异，不阻止操作。';
+    renderRecords();
+  }
+
+  // 3. Only real UI actions are emitted. Platform supplies record; standalone is inert.
+  function logEvent(type, data) {
+    const api = window.qizhiCustomSim;
+    if (api && typeof api.record === 'function') api.record(type, data);
+  }
+  function toast(text) {
+    const node = $('#qz-toast'); clearTimeout(toastTimer); node.textContent = text; node.hidden = false;
+    toastTimer = setTimeout(function () { node.hidden = true; }, 2400);
+  }
+  function setMode(mode, userInitiated) {
+    if (state.mode === mode) return;
+    state.mode = mode; render();
+    if (userInitiated) logEvent('select_change', { label: '模板视图', value: mode === 'bench' ? '实验台' : '界面记录' });
+  }
+  function fullReset(userInitiated) {
+    state = makeState();
+    if (window.matchMedia('(max-width: 900px), (max-height: 560px)').matches) {
+      $$('[data-secondary-panel]').forEach(function (panel) { state.panels[panel.id] = false; });
+    }
+    pointer = null; suppressClickUntil = 0; closeGuide(false); render();
+    if (userInitiated) { logEvent('button_press', { label: '重置实验' }); toast('模板界面已重置；没有清除平台教学任务。'); }
+  }
+  function openGuide() {
+    previousFocus = document.activeElement;
+    $('#qz-guide').hidden = false; $('#qz-guide-close').focus();
+    logEvent('button_press', { label: '实验指南' });
+  }
+  function closeGuide(restoreFocus) {
+    const wasOpen = !$('#qz-guide').hidden;
+    $('#qz-guide').hidden = true;
+    if (restoreFocus && wasOpen && previousFocus && previousFocus.isConnected) previousFocus.focus();
+  }
+  function addRecord() {
+    const values = $$('[data-param]').map(function (control) { return control.dataset.param; }).filter(function (key, i, all) { return all.indexOf(key) === i; });
+    const description = values.map(function (key) { const value = state[key]; return CONTROL_LABELS[key] + '=' + (typeof value === 'boolean' ? (value ? '开' : '关') : value); }).join('；');
+    if (state.records.length >= 20) { toast('模板演示最多保留20条记录，请重置后再试。'); return; }
+    state.records.push(description || '已放置材料=' + state.placed.length + '（仅界面示例）');
+    render(); logEvent('button_press', { label: '记录界面状态' }); toast('已记录当前界面；这不是正式观察回答。');
+  }
+  function selectTool(key) { state.selectedTool = key; render(); logEvent('select_change', { label: '选择材料', value: TOOL_NAMES[key] }); }
+  function placeTool() {
+    if (!state.selectedTool) { toast('先选择一种材料。'); return; }
+    if (state.placed.length >= 8) { toast('模板最多显示8个材料标记；可重置。'); return; }
+    state.placed.push(state.selectedTool); render(); logEvent('button_press', { label: '放置材料', value: TOOL_NAMES[state.selectedTool] });
+  }
+
+  // 4. Bind native controls, keyboard access, and optional pointer placement.
+  $$('[data-param]').forEach(function (control) {
+    control.addEventListener('input', function () {
+      const key = control.dataset.param;
+      state[key] = control.type === 'checkbox' ? control.checked : control.type === 'range' ? Number(control.value) : control.value;
+      render();
+    });
+    let committed = state[control.dataset.param];
+    control.addEventListener('change', function () {
+      const key = control.dataset.param;
+      const next = control.type === 'checkbox' ? control.checked : control.type === 'range' ? Number(control.value) : control.value;
+      state[key] = next;
+      if (committed !== next) {
+        const displayValue = function (value) { return typeof value === 'boolean' ? (value ? '开' : '关') : value; };
+        logEvent('value_change', { label: CONTROL_LABELS[key], from: displayValue(committed), to: displayValue(next) }); committed = next;
+      }
+      render();
+    });
+    // Reset must reset each control's committed value as well as its visible value.
+    control.addEventListener('qz-reset', function () { committed = state[control.dataset.param]; });
+  });
+  document.addEventListener('click', function (event) {
+    const tab = event.target.closest('[data-tab]');
+    if (tab) { setMode(tab.dataset.tab, true); return; }
+    const collapse = event.target.closest('[data-collapse]');
+    if (collapse) { const key = collapse.dataset.collapse; state.panels[key] = state.panels[key] === false; render(); return; }
+    const tool = event.target.closest('[data-tool]');
+    if (tool) { if (Date.now() >= suppressClickUntil) selectTool(tool.dataset.tool); return; }
+    const action = event.target.closest('[data-action]');
+    if (!action) return;
+    switch (action.dataset.action) {
+      case 'guide': openGuide(); break;
+      case 'close-guide': closeGuide(true); break;
+      case 'reset': fullReset(true); $$('[data-param]').forEach(function (control) { control.dispatchEvent(new Event('qz-reset')); }); break;
+      case 'play': state.running = !state.running; render(); logEvent('button_press', { label: state.running ? '播放示例' : '暂停示例' }); break;
+      case 'record': addRecord(); break;
+      case 'place': placeTool(); break;
+    }
+  });
+  $('#qz-guide').addEventListener('click', function (event) { if (event.target === event.currentTarget) closeGuide(true); });
+  document.addEventListener('keydown', function (event) {
+    if (!$('#qz-guide').hidden) {
+      if (event.key === 'Escape') { event.preventDefault(); closeGuide(true); return; }
+      if (event.key === 'Tab') {
+        const focusables = Array.from($('#qz-guide').querySelectorAll('button, a[href], input, select, textarea')).filter(function (element) { return !element.disabled && !element.hidden; });
+        const first = focusables[0], last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+      return;
+    }
+    const tab = event.target.closest('[data-tab]');
+    if (tab && ['ArrowRight','ArrowLeft','Home','End'].indexOf(event.key) !== -1) {
+      event.preventDefault(); const tabs = $$('[data-tab]'); let index = tabs.indexOf(tab);
+      index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      setMode(tabs[index].dataset.tab, true); tabs[index].focus();
+    }
+  });
+  document.addEventListener('pointerdown', function (event) {
+    const tool = event.target.closest('[data-tool]');
+    if (!tool || event.button !== 0) return;
+    pointer = { id: event.pointerId, key: tool.dataset.tool, x: event.clientX, y: event.clientY, moving: false };
+  });
+  document.addEventListener('pointermove', function (event) {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    if (!pointer.moving && Math.hypot(event.clientX - pointer.x, event.clientY - pointer.y) > 6) {
+      pointer.moving = true; selectTool(pointer.key);
+    }
+  });
+  document.addEventListener('pointerup', function (event) {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    if (pointer.moving) {
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      if (target && target.closest('[data-drop-target]')) placeTool();
+      suppressClickUntil = Date.now() + 350;
+    }
+    pointer = null;
+  });
+  document.addEventListener('pointercancel', function () { pointer = null; });
+  document.addEventListener('visibilitychange', function () { if (document.hidden && state.running) { state.running = false; render(); } });
+
+  fullReset(false);
+  // 5. Marker is exposed only after initialization. No fake PhET model or persistence.
+  window.qizhiCustomSim = {
+    snapshot: function () {
+      const fields = ['内容类型=布局模板（非真实实验）', '布局=' + templateName,
+        '当前视图=' + (state.mode === 'bench' ? '实验台' : '界面记录'),
+        '界面状态=' + (state.running ? '播放示例' : '暂停'),
+        '界面记录=' + state.records.length + '条', '材料标记=' + state.placed.length + '个'];
+      $$('[data-param]').forEach(function (control) { const key = control.dataset.param; const value = state[key]; fields.push(CONTROL_LABELS[key] + '=' + (typeof value === 'boolean' ? (value ? '开' : '关') : String(value))); });
+      return fields.join('\n').slice(0,400);
+    },
+    reset: function () { fullReset(false); $$('[data-param]').forEach(function (control) { control.dispatchEvent(new Event('qz-reset')); }); }
+  };
+})();
+</script>
+</body>
+</html>
